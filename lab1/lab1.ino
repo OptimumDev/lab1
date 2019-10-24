@@ -1,66 +1,37 @@
-#include <Arduino.h>
-#include <MD_TCS230.h>
+#include "rgb_led.h"
 
-#define  S0_OUT  2
-#define  S1_OUT  3
-#define  S2_OUT  4
-#define  S3_OUT  5
+#define FIRST_LED_PIN 1
+#define LEDS_COUNT 6
 
-#define R_OUT 6
-#define G_OUT 7
-#define B_OUT 8
+void set_light_for_opposite_leds(int led_number, int light_power);
+void flash_lights(int current_number);
 
-MD_TCS230 colorSensor(S2_OUT, S3_OUT, S0_OUT, S1_OUT);
+const int LEDS_ARRAY_MIDDLE = LEDS_COUNT / 2;
 
-void setup()
-{
-    Serial.begin(115200);
-    Serial.println("Started!");
+const rgb_led leds[LEDS_COUNT];
 
-    sensorData whiteCalibration;
-    whiteCalibration.value[TCS230_RGB_R] = 0;
-    whiteCalibration.value[TCS230_RGB_G] = 0;
-    whiteCalibration.value[TCS230_RGB_B] = 0;
-
-    sensorData blackCalibration;
-    blackCalibration.value[TCS230_RGB_R] = 0;
-    blackCalibration.value[TCS230_RGB_G] = 0;
-    blackCalibration.value[TCS230_RGB_B] = 0;
-
-    colorSensor.begin();
-    colorSensor.setDarkCal(&blackCalibration);
-    colorSensor.setWhiteCal(&whiteCalibration);
-
-    pinMode(R_OUT, OUTPUT);
-    pinMode(G_OUT, OUTPUT);
-    pinMode(B_OUT, OUTPUT);
+void setup() {
+  for (int i = 0; i < LEDS_COUNT; i++) {
+    int current_red_pin = FIRST_LED_PIN + i * 3;
+    leds[i] = rgb_led(current_red_pin, current_red_pin + 1, current_red_pin + 2);
+  }
 }
 
-void loop() 
-{
-    colorData rgb;
-    colorSensor.read();
-
-    while (!colorSensor.available());
-
-    colorSensor.getRGB(&rgb);
-    print_rgb(rgb);
-    set_rgb_led(rgb);
+void loop() {
+  for (int i = 0; i < LEDS_ARRAY_MIDDLE; i++) {
+    flash_lights(i);
+  }
 }
 
-void print_rgb(colorData rgb)
-{
-  Serial.print(rgb.value[TCS230_RGB_R]);
-  Serial.print(" ");
-  Serial.print(rgb.value[TCS230_RGB_G]);
-  Serial.print(" ");
-  Serial.print(rgb.value[TCS230_RGB_B]);
-  Serial.println();
+void flash_lights(int current_number) {
+  for (int i = 0; i < 255; i++)
+    set_light_for_opposite_leds(current_number, i);
+  
+  for (int i = 255; i >= 0; i--)
+    set_light_for_opposite_leds(current_number, i);
 }
 
-void set_rgb_led(colorData rgb)
-{
-    analogWrite(R_OUT, 255 - rgb.value[TCS230_RGB_R]);
-    analogWrite(G_OUT, 255 - rgb.value[TCS230_RGB_G]);
-    analogWrite(B_OUT, 255 - rgb.value[TCS230_RGB_B]);
+void set_light_for_opposite_leds(int led_number, int light_power) {
+  leds[led_number].set_light(light_power);
+  leds[led_number + LEDS_ARRAY_MIDDLE].set_light(light_power);
 }
