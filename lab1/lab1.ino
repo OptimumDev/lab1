@@ -42,5 +42,5 @@ void flash_lights(int current_number) {
 
 void set_light_for_opposite_leds(int led_number, int light_power) {
   leds[led_number].set_light(light_power);
-  leds[led_number + LEDS_ARRAY_MIDDLE].set_light(light_power);
+  leds[(led_number + LEDS_ARRAY_MIDDLE) % LEDS_COUNT].set_light(light_power);
 }
