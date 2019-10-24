@@ -5,9 +5,9 @@ class rgb_led {
     rgb_led() { }
   
     rgb_led(int red_pin, int green_pin, int blue_pin) {
-      red_pin = red_pin;
-      green_pin = green_pin;
-      blue_pin = blue_pin;
+      this->red_pin = red_pin;
+      this->green_pin = green_pin;
+      this->blue_pin = blue_pin;
 
       pinMode(red_pin, OUTPUT);
       pinMode(green_pin, OUTPUT);

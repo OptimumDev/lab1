@@ -3,6 +3,10 @@
 #define FIRST_LED_PIN 1
 #define LEDS_COUNT 6
 
+//Надо посмотреть на реальной плате и возможно подкорректировать
+#define LIGHT_STEP_DELAY_TIME 10
+#define FLASHING_PAUSE_TIME 100
+
 void set_light_for_opposite_leds(int led_number, int light_power);
 void flash_lights(int current_number);
 
@@ -20,15 +24,20 @@ void setup() {
 void loop() {
   for (int i = 0; i < LEDS_ARRAY_MIDDLE; i++) {
     flash_lights(i);
+    delay(FLASHING_PAUSE_TIME);
   }
 }
 
 void flash_lights(int current_number) {
-  for (int i = 0; i < 255; i++)
+  for (int i = 0; i < 255; i += 8) {
     set_light_for_opposite_leds(current_number, i);
+    delay(LIGHT_STEP_DELAY_TIME);
+  }
   
-  for (int i = 255; i >= 0; i--)
+  for (int i = 255; i >= 0; i -= 8) {
     set_light_for_opposite_leds(current_number, i);
+    delay(LIGHT_STEP_DELAY_TIME);
+  }
 }
 
 void set_light_for_opposite_leds(int led_number, int light_power) {
