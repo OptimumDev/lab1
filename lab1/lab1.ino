@@ -1,11 +1,10 @@
 #include "rgb_led.h"
 
-#define FIRST_LED_PIN 1
+#define FIRST_LED_PIN 2
 #define LEDS_COUNT 6
 
-//Надо посмотреть на реальной плате и возможно подкорректировать
-#define LIGHT_STEP_DELAY_TIME 10
-#define FLASHING_PAUSE_TIME 100
+#define LIGHT_STEP_DELAY_TIME 15
+#define FLASHING_PAUSE_TIME 250
 
 void set_light_for_opposite_leds(int led_number, int light_power);
 void flash_lights(int current_number);
@@ -16,8 +15,7 @@ const rgb_led leds[LEDS_COUNT];
 
 void setup() {
   for (int i = 0; i < LEDS_COUNT; i++) {
-    int current_red_pin = FIRST_LED_PIN + i * 3;
-    leds[i] = rgb_led(current_red_pin, current_red_pin + 1, current_red_pin + 2);
+    leds[i] = rgb_led(FIRST_LED_PIN + i);
   }
 }
 

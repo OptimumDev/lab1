@@ -3,6 +3,10 @@
 class rgb_led {
   public:
     rgb_led() { }
+
+    rgb_led(int red_pin) {
+      this->red_pin = red_pin;
+    }
   
     rgb_led(int red_pin, int green_pin, int blue_pin) {
       this->red_pin = red_pin;
